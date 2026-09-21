@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ゆるかわBGMコンポーザー — Yurukawa BGM Composer</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#fffbf5">
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ヘッダー -->
+  <header>
+    <div class="brand-wrapper">
+      <div class="brand-icon">
+        <img src="assets/icon-192.png" alt="ゆるかわBGMコンポーザー">
+      </div>
+      <div class="brand">
+        <h1>ゆるかわBGMコンポーザー</h1>
+        <p class="tagline">ぽかぽか・おひるね・マシュマロトイポップ 🌸 心がとろける癒やし曲ジェネレーター</p>
+      </div>
+    </div>
+    <div class="header-badge">激しさゼロ・癒やし100%</div>
+  </header>
+
+  <div class="grid">
+    <!-- 左ペイン: 設定パネル群 -->
+    <div class="left-col">
+
+      <!-- 曲名・テーマ入力 -->
+      <section class="panel">
+        <h2>
+          曲名・テーマ
+          <span class="badge">TITLE</span>
+        </h2>
+        <div class="field" style="margin-bottom: 0;">
+          <label class="small">曲名や世界観 (プロンプトやプリセットに連動します)</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="trackTitleInput" placeholder="例: ねこのおひるねワルツ、もふもふマシュマロ村">
+            <button class="ghost" id="randomTitleBtn" type="button" style="white-space: nowrap;">🎲 曲名ガチャ</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ゆるかわシチュエーション -->
+      <section class="panel">
+        <h2>
+          世界観・シチュエーション
+          <span class="badge">SITUATION</span>
+        </h2>
+        <div class="chip-row" id="situationChips"></div>
+      </section>
+
+      <!-- 癒やしの音色・楽器 -->
+      <section class="panel">
+        <h2>
+          癒やしの音色・楽器
+          <span class="badge">INSTRUMENTS</span>
+        </h2>
+        <div class="chip-row" id="instChips"></div>
+      </section>
+
+      <!-- ゆるかわ効果音 -->
+      <section class="panel">
+        <h2>
+          ゆるかわ効果音
+          <span class="badge">CUTE SFX</span>
+        </h2>
+        <div class="chip-row" id="sfxChips"></div>
+        <div class="field" style="margin-top: 14px; margin-bottom: 0;">
+          <label class="small">効果音の頻度</label>
+          <select id="sfxDensity">
+            <option value="none">使わない (静かな音楽のみ)</option>
+            <option value="occasional" selected>たまにコロンと挟む (推奨)</option>
+            <option value="frequent">楽しげに散りばめる (にぎやか)</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- テンポ・調性・オルゴール試聴 -->
+      <section class="panel">
+        <h2>
+          おやすみテンポ・調性
+          <span class="badge">TEMPO & KEY</span>
+        </h2>
+        <div class="field">
+          <label class="small">テンポ (BPM・心拍数に寄り添うゆったりペース)</label>
+          <div class="tempo-row">
+            <input type="range" id="tempoRange" min="55" max="105" value="80">
+            <div class="tempo-readout" id="tempoReadout">80<span> BPM</span></div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-bottom: 0;">
+          <label class="small">あたたかい調性 (コード感)</label>
+          <select id="keySelect">
+            <option value="sunny_maj7">陽だまりメジャー7th (やさしく包み込む安心感)</option>
+            <option value="sweet_add9">あまいadd9 (お砂糖のような愛おしい甘酸っぱさ)</option>
+            <option value="penta_lullaby">ぽかぽかペンタトニック (素朴な子守唄・童話)</option>
+            <option value="waltz_34">ゆらゆらワルツ (3拍子のゆりかご・お昼寝)</option>
+          </select>
+        </div>
+
+        <!-- オルゴール・木琴プレビュアー -->
+        <div class="preview-player">
+          <div class="preview-main-row">
+            <button class="preview-btn" id="previewToggleBtn" type="button">▶ オルゴールで試聴 (ほっこり音源)</button>
+            <div class="volume-row">
+              <span>音量</span>
+              <input type="range" id="previewVolume" min="0" max="0.8" step="0.05" value="0.25">
+            </div>
+          </div>
+          <div class="step-tracker" title="光るしずくインジケーター">
+            <div class="step-led"></div><div class="step-led"></div><div class="step-led"></div><div class="step-led"></div>
+            <div class="step-led"></div><div class="step-led"></div><div class="step-led"></div><div class="step-led"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- やさしさレベル（激しさ排除） -->
+      <section class="panel">
+        <h2>
+          やさしさ・脱力レベル
+          <span class="badge">GENTLE</span>
+        </h2>
+        <div class="field">
+          <label class="small">曲のまったり度合い</label>
+          <select id="gentleSelect">
+            <option value="gentle">おだやかカフェ (ほんのりソフトなビート)</option>
+            <option value="extra_soft">ふんわりマシュマロ (完全ドラムレス・鍵盤と木琴)</option>
+            <option value="sleepy">すやすや子守唄 (眠気を誘う究極の脱力)</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom: 0;">
+          <label class="small">完全にシャットアウトしたい激しい要素 (除外指定)</label>
+          <div class="chip-row" id="negativeChips"></div>
+        </div>
+      </section>
+
+      <!-- 長さ・出力形式 -->
+      <section class="panel">
+        <h2>
+          構成・出力形式
+          <span class="badge">FORMAT</span>
+        </h2>
+        <div class="field">
+          <label class="small">曲の長さ (タイムライン計算用)</label>
+          <div class="chip-row" id="durationChips"></div>
+        </div>
+        
+        <div class="field">
+          <label class="small">対象AIサービス</label>
+          <select id="aiTargetSelect">
+            <option value="flow" selected>Google Flow Music (自然な文章形式)</option>
+            <option value="suno_udio">Suno / Udio (タグ指示併用形式)</option>
+            <option value="plain">シンプル文章形式</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin-bottom: 0;">
+          <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.84rem; font-weight: 700; cursor: pointer;">
+            <input type="checkbox" id="embedTimelineCheck" style="accent-color: var(--pink-main); width: 18px; height: 18px;">
+            <span>プロンプト本文に構成タイムラインを埋め込む</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- プリセット管理 -->
+      <section class="panel">
+        <h2>
+          お気に入りプリセット
+          <span class="badge">PRESETS</span>
+        </h2>
+        <div class="chip-row" id="presetChips"></div>
+        <div class="field" style="margin-top: 14px; margin-bottom: 0; display: flex; gap: 8px;">
+          <input type="text" id="presetNameInput" placeholder="プリセット名 (空欄なら現在の曲名)">
+          <button class="ghost" id="savePresetBtn" type="button" style="white-space: nowrap;">現在設定を保存</button>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+          <button class="ghost" id="exportPresetBtn" type="button">JSON書き出し</button>
+          <button class="ghost" id="importPresetBtn" type="button">JSON読み込み</button>
+          <button class="ghost" id="shareUrlBtn" type="button">共有URLコピー 💌</button>
+          <input type="file" id="importPresetFile" accept=".json" style="display: none;">
+        </div>
+      </section>
+
+      <!-- アクションボタン群 -->
+      <div class="actions">
+        <button class="primary" id="genBtn" type="button">スクリプトを生成 🌸</button>
+        <button class="ghost" id="randomBtn" type="button">🎲 おまかせ</button>
+        <button class="ghost" id="resetBtn" type="button">リセット</button>
+      </div>
+
+    </div>
+
+    <!-- 右ペイン: プロンプト出力・タイムライン -->
+    <div class="right-col">
+
+      <!-- プロンプト出力 -->
+      <section class="panel">
+        <h2>
+          生成スクリプト
+          <span class="badge">PROMPT</span>
+        </h2>
+        <div class="lang-toggle" id="langToggle">
+          <button data-lang="ja" class="on" type="button">日本語プロンプト (確認用)</button>
+          <button data-lang="en" type="button">English prompt (推奨)</button>
+        </div>
+        <textarea id="promptOut" readonly></textarea>
+        <div class="copy-row">
+          <span style="font-size: 0.78rem; color: var(--text-sub);">※音楽AIに貼り付けてご利用ください</span>
+          <button id="copyBtn" type="button">プロンプトをコピー 🌸</button>
+        </div>
+      </section>
+
+      <!-- ネガティブプロンプト -->
+      <section class="panel" id="negativeSection" style="display: none;">
+        <h2>
+          激しい音の除外指示
+          <span class="badge">NEGATIVE</span>
+        </h2>
+        <textarea id="negativeOut" class="textarea-mini" readonly></textarea>
+        <div class="copy-row">
+          <span style="font-size: 0.78rem; color: var(--text-sub);">「Negative Prompt / Exclude」欄に貼り付けます</span>
+          <button id="copyNegBtn" type="button">除外指示をコピー</button>
+        </div>
+      </section>
+
+      <!-- 構成タイムライン -->
+      <section class="panel">
+        <h2>
+          構成タイムライン
+          <span class="badge">TIMELINE</span>
+        </h2>
+        <div class="screen" id="timeline"></div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer>
+    ゆるかわBGMコンポーザー — Yurukawa BGM Composer<br>
+    激しい音のない、心あたたまる癒やしの音楽づくりをお手伝いします 🐾
+  </footer>
+
+</div>
+
+<div class="flash" id="flash">コピーしました 🌸</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

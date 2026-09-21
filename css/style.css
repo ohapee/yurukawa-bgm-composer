@@ -1,0 +1,631 @@
+/* ==========================================================================
+   YURUKAWA BGM COMPOSER — ゆるかわBGMコンポーザー
+   トーン＆マナー: ぽかぽか・おひるね・マシュマロパステル
+   ========================================================================== */
+
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* パステル・ミルクパレット */
+  --bg: #fffbf5;                  /* 温かいミルククリーム色 */
+  --bg-card: #ffffff;             /* まっ白なマシュマロカード */
+  --bg-sub: #fff3f5;              /* ほんのりサクラピンクの下地 */
+  --bg-input: #ffffff;
+
+  --text-main: #4d3a33;           /* 優しいミルクココア色（黒すぎない） */
+  --text-sub: #8c7468;            /* 補助テキスト */
+  --border-color: #ffd6df;        /* 柔らかなピンクベージュのフチ */
+
+  /* ゆるかわアクセント */
+  --pink-main: #ff85a2;           /* いちごミルクピンク */
+  --pink-soft: #ffb8c9;
+  --yellow-main: #ffd152;         /* カスタードイエロー */
+  --mint-main: #8ee3ad;           /* メロンシャーベット */
+  --lavender-main: #c4b5fd;       /* ラベンダードロップ */
+  --blue-soft: #a5d8ff;           /* しずくスカイブルー */
+
+  --shadow-soft: 0 10px 25px rgba(255, 175, 190, 0.22);
+  --shadow-chip: 0 4px 12px rgba(255, 180, 195, 0.18);
+  --shadow-active: 0 6px 16px rgba(255, 133, 162, 0.4);
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(#ffe6ec 1.8px, transparent 1.8px);
+  background-size: 24px 24px;
+  color: var(--text-main);
+  font-family: "M PLUS Rounded 1c", "Zen Maru Gothic", "Hiragino Maru Gothic ProN", Meiryo, sans-serif;
+  line-height: 1.6;
+}
+
+.wrap {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 26px 18px 80px;
+}
+
+/* ==========================================================================
+   ヘッダー（雲とマシュマロ風）
+   ========================================================================== */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  background: var(--bg-card);
+  border: 3px solid var(--border-color);
+  border-radius: 32px;
+  box-shadow: var(--shadow-soft);
+  padding: 22px 28px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 3px solid var(--pink-soft);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(255, 184, 201, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.brand-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand h1 {
+  font-size: clamp(1.15rem, 2.3vw, 1.55rem);
+  margin: 0 0 4px;
+  color: var(--pink-main);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.brand .tagline {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-sub);
+  font-weight: 600;
+}
+
+.header-badge {
+  background: var(--bg-sub);
+  color: var(--pink-main);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 2px dashed var(--pink-soft);
+}
+
+/* ==========================================================================
+   2カラムレイアウト
+   ========================================================================== */
+.grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 940px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* パネル（マシュマロカード） */
+section.panel {
+  background: var(--bg-card);
+  border: 2.5px solid var(--border-color);
+  border-radius: 28px;
+  box-shadow: var(--shadow-soft);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+  position: relative;
+}
+
+h2 {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px dashed #ffe0e7;
+  padding-bottom: 10px;
+}
+
+h2 .badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  background: #fff0f3;
+  color: var(--pink-main);
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   ぷっくりマシュマロチップ
+   ========================================================================== */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.chip {
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--bg-sub);
+  color: var(--text-main);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-chip);
+}
+
+.chip:active {
+  transform: scale(0.96);
+}
+
+/* 選択状態 */
+.chip.on {
+  background: var(--pink-main);
+  border-color: var(--pink-main);
+  color: #ffffff;
+  box-shadow: var(--shadow-active);
+  transform: translateY(-1px);
+}
+
+/* シチュエーション用ラジオ風チップ */
+#situationChips .chip.on {
+  background: var(--pink-main);
+  color: #ffffff;
+}
+
+/* 楽器チップ */
+#instChips .chip.on {
+  background: var(--lavender-main);
+  border-color: var(--lavender-main);
+  color: #3b2866;
+}
+
+/* 効果音チップ */
+#sfxChips .chip.on {
+  background: var(--yellow-main);
+  border-color: var(--yellow-main);
+  color: #5c4300;
+}
+
+/* ==========================================================================
+   入力フォーム・スライダー
+   ========================================================================== */
+.field {
+  margin-bottom: 16px;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+label.small {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+}
+
+input[type="text"], select {
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: #ffffff;
+  color: var(--text-main);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  padding: 10px 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, select:focus {
+  border-color: var(--pink-main);
+  box-shadow: 0 0 0 4px rgba(255, 133, 162, 0.18);
+}
+
+input[type="text"]::placeholder {
+  color: #bfaea5;
+}
+
+/* テンポ */
+.tempo-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+input[type="range"] {
+  flex: 1;
+  accent-color: var(--pink-main);
+  cursor: pointer;
+}
+
+.tempo-readout {
+  font-size: 1.3rem;
+  min-width: 110px;
+  text-align: right;
+  color: var(--pink-main);
+  font-weight: 800;
+}
+
+.tempo-readout span {
+  font-size: 0.72rem;
+  color: var(--text-sub);
+}
+
+/* ==========================================================================
+   オルゴール・木琴の癒やし試聴プレイヤー
+   ========================================================================== */
+.preview-player {
+  background: #fff4f7;
+  border: 2.5px solid #ffccd7;
+  border-radius: 22px;
+  padding: 16px 18px;
+  margin-top: 16px;
+}
+
+.preview-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.preview-btn {
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--pink-main);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(255, 133, 162, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s;
+}
+
+.preview-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 133, 162, 0.45);
+}
+
+.preview-btn.playing {
+  background: #50cb84;
+  box-shadow: 0 6px 16px rgba(80, 203, 132, 0.4);
+  animation: pulse 1.4s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.03); }
+}
+
+.volume-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+.volume-row input {
+  width: 75px;
+  accent-color: var(--pink-main);
+}
+
+/* 8ステップの光るしずくインジケーター */
+.step-tracker {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.step-led {
+  height: 10px;
+  background: #ffe3ea;
+  border-radius: 999px;
+  transition: all 0.08s;
+}
+
+.step-led.active {
+  background: var(--pink-main);
+  box-shadow: 0 0 10px var(--pink-main);
+  transform: scaleY(1.4);
+}
+
+/* ==========================================================================
+   ボタン群
+   ========================================================================== */
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+button.primary, button.ghost {
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 12px 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+button.primary {
+  background: var(--pink-main);
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(255, 133, 162, 0.38);
+}
+
+button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(255, 133, 162, 0.48);
+}
+
+button.ghost {
+  background: #ffffff;
+  border: 2px solid var(--border-color);
+  color: var(--text-main);
+}
+
+button.ghost:hover {
+  background: var(--bg-sub);
+  border-color: var(--pink-soft);
+  transform: translateY(-2px);
+}
+
+/* プリセット管理 */
+.preset-item {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+}
+
+.preset-item .chip {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.preset-del {
+  border: 2px solid var(--border-color);
+  border-left: none;
+  border-top-right-radius: 999px;
+  border-bottom-right-radius: 999px;
+  background: var(--bg-sub);
+  color: var(--pink-main);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 8px 11px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.preset-del:hover {
+  background: #ffe3e8;
+}
+
+.preset-empty {
+  color: var(--text-sub);
+  font-size: 0.84rem;
+}
+
+/* ==========================================================================
+   プロンプト出力・構成画面
+   ========================================================================== */
+.lang-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lang-toggle button {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+
+.lang-toggle button.on {
+  background: var(--pink-main);
+  border-color: var(--pink-main);
+  color: #ffffff;
+}
+
+textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  background: #fffafc;
+  color: var(--text-main);
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--pink-main);
+}
+
+.textarea-mini {
+  min-height: 70px;
+  font-size: 0.84rem;
+}
+
+.copy-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.copy-row button {
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 800;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 999px;
+  background: var(--mint-main);
+  color: #1b4d2e;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(142, 233, 173, 0.4);
+  transition: all 0.15s;
+}
+
+.copy-row button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+/* タイムライン画面 */
+.screen {
+  background: #fffafc;
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+.screen-row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 14px;
+  padding: 12px 16px;
+  border-bottom: 2px dashed #ffe6ec;
+  align-items: baseline;
+}
+
+.screen-row:last-child {
+  border-bottom: none;
+}
+
+.screen-time {
+  color: var(--pink-main);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.screen-body .lab {
+  color: var(--text-main);
+  font-size: 0.84rem;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.screen-body .desc {
+  color: var(--text-sub);
+  font-size: 0.82rem;
+}
+
+.empty-note {
+  color: var(--text-sub);
+  font-size: 0.86rem;
+  padding: 18px 16px;
+}
+
+/* トースト通知 */
+.flash {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #ffffff;
+  color: var(--pink-main);
+  border: 2.5px solid var(--pink-soft);
+  box-shadow: 0 10px 30px rgba(255, 133, 162, 0.35);
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 1000;
+}
+
+.flash.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+footer {
+  margin-top: 36px;
+  color: var(--text-sub);
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.8;
+  font-weight: 600;
+}
