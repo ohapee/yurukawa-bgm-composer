@@ -11,6 +11,10 @@
 
 さらに、ブラウザの音源合成機能（Web Audio API）により、オルゴールや木琴、シャボン玉の音色がぽろぽろと鳴る「癒やしのリアルタイム試聴機能」を搭載しています。
 
+### オンライン公開URL
+- **GitHub Pages**: [https://ohapee.github.io/yurukawa-bgm-composer/](https://ohapee.github.io/yurukawa-bgm-composer/)
+  （PC・スマホのどちらのブラウザからでも直接アクセス可能です）
+
 ---
 
 ## 主な機能と特徴
